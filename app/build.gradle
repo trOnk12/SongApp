@@ -24,6 +24,9 @@ android {
 }
 
 dependencies {
+    def room_version = "2.2.0-alpha02"
+
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.0.2'
@@ -42,10 +45,16 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.11'
     //Dagger 2
     implementation 'com.google.dagger:dagger:2.15'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.15'
+    kapt 'com.google.dagger:dagger-compiler:2.15'
 
     implementation 'com.google.dagger:dagger-android:2.15'
     implementation 'com.google.dagger:dagger-android-support:2.15' // if you use the support libraries
-    annotationProcessor 'com.google.dagger:dagger-android-processor:2.15'
+    kapt 'com.google.dagger:dagger-android-processor:2.15'
+
+    //Room
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    //Room RxJava support
+    implementation "androidx.room:room-rxjava2:$room_version"
 
 }
