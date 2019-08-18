@@ -42,9 +42,11 @@ dependencies {
     //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.6.1'
     //Gson
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     //RxJava
     implementation 'io.reactivex.rxjava2:rxjava:2.2.11'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
     //Dagger 2
     implementation 'com.google.dagger:dagger:2.15'
     kapt 'com.google.dagger:dagger-compiler:2.15'
