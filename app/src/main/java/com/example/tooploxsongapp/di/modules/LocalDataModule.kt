@@ -1,8 +1,8 @@
 package com.example.tooploxsongapp.di.modules
 
 import android.content.Context
-import com.example.tooploxsongapp.data.local.AssetsHelper
-import com.example.tooploxsongapp.data.local.LocalDataSongs
+import com.example.tooploxsongapp.data.local.FileManager
+import com.example.tooploxsongapp.data.local.LocalSongsReader
 import dagger.Module
 import dagger.Provides
 
@@ -10,12 +10,12 @@ import dagger.Provides
 class LocalDataModule {
 
     @Provides
-    fun provideAssetsHelper(context: Context): AssetsHelper {
-        return AssetsHelper(context)
+    fun provideAssetsHelper(context: Context): FileManager {
+        return FileManager(context)
     }
 
     @Provides
-    fun provideLocalDataSongs(assetsHelper: AssetsHelper): LocalDataSongs {
-        return LocalDataSongs(assetsHelper)
+    fun provideLocalDataSongs(fileManager: FileManager): LocalSongsReader {
+        return LocalSongsReader(fileManager)
     }
 }
