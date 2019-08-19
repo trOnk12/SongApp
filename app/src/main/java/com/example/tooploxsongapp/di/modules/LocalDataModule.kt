@@ -10,12 +10,12 @@ import dagger.Provides
 class LocalDataModule {
 
     @Provides
-    fun provideAssetsHelper(context: Context): FileManager {
+    fun provideFileManager(context: Context): FileManager {
         return FileManager(context)
     }
 
     @Provides
-    fun provideLocalDataSongs(fileManager: FileManager): LocalSongsReader {
+    fun provideLocalSongsReader(fileManager: FileManager): LocalSongsReader {
         return LocalSongsReader(fileManager)
     }
 }

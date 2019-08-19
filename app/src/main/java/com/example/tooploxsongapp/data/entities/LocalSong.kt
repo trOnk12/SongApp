@@ -1,8 +1,8 @@
 import com.google.gson.annotations.SerializedName
 
-data class Song (
+data class LocalSong (
 
-	@SerializedName("Song Clean") val song : String,
+	@SerializedName("LocalSong Clean") val song : String,
 	@SerializedName("ARTIST CLEAN") val artist : String,
 	@SerializedName("Release Year") val releaseYear : Int,
 	@SerializedName("COMBINED") val combined : String,
