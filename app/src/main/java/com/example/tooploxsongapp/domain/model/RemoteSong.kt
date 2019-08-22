@@ -2,7 +2,7 @@ package com.example.tooploxsongapp.domain.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Song (
+data class RemoteSong (
 
 	@SerializedName("wrapperType") val wrapperType : String,
 	@SerializedName("kind") val kind : String,
