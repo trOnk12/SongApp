@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools">
+        xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable name="songListViewModel" type="com.example.tooploxsongapp.presentation.songslist.SongsListViewModel"/>
     </data>
@@ -9,21 +9,39 @@
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             tools:context=".presentation.songslist.SongsListActivity">
 
         <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+                android:gravity="center"
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-         <EditText
-                    android:id="@+id/artistNameSearchInput"
-                    android:text="@{songListViewModel.artistName}"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+            <LinearLayout
+                    android:weightSum="1"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                <EditText
+                        android:layout_weight="0.3"
+                        android:id="@+id/artistNameSearchInput"
+                        android:text="@{songListViewModel.artistName}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:hint="Artist name"/>
 
+                <EditText
+                        android:layout_weight="0.7"
+                        android:id="@+id/releaseYearInput"
+                        android:text="@{songListViewModel.releaseYear}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:hint="Year"/>
+            </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
 
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
     </LinearLayout>
 
 </layout>

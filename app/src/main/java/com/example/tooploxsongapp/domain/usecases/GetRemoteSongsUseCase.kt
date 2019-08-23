@@ -6,5 +6,8 @@ import io.reactivex.Flowable
 
 class GetRemoteSongsUseCase(private val songRepository: SongRepository) {
 
-    fun getRemoteSongsByArtistName(artistName:String) : Flowable<List<RemoteSong>> = songRepository.getRemoteSongByArtist(artistName)
+    fun getRemoteSongs(artistName: String, releaseYear: String): Flowable<List<RemoteSong>> {
+        return songRepository.getRemoteSongs(artistName, releaseYear)
+    }
+
 }

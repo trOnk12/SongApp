@@ -5,12 +5,20 @@ import androidx.lifecycle.MutableLiveData
 import com.example.tooploxsongapp.data.entities.CombinedSongs
 import com.example.tooploxsongapp.data.entities.LocalSong
 import com.example.tooploxsongapp.domain.model.RemoteSong
-import com.example.tooploxsongapp.domain.usecases.GetSongsUseCase
+import com.example.tooploxsongapp.domain.usecases.GetCombinedSongsUseCase
+import com.example.tooploxsongapp.domain.usecases.GetLocalSongsUseCase
+import com.example.tooploxsongapp.domain.usecases.GetRemoteSongsUseCase
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class SongsListViewModel(private val getSongsUseCase: GetSongsUseCase) : BaseViewModel() {
+class SongsListViewModel
+@Inject constructor(
+    private val getCombinedSongsUseCase: GetCombinedSongsUseCase,
+    private val getLocalSongsUseCase: GetLocalSongsUseCase,
+    private val getRemoteSongsUseCase: GetRemoteSongsUseCase
+) : BaseViewModel() {
 
     private val autoCompletePublishSubject = PublishRelay.create<String>()
 
@@ -30,22 +38,36 @@ class SongsListViewModel(private val getSongsUseCase: GetSongsUseCase) : BaseVie
 
     private fun determineFetchSource(fetchLocal: Boolean, fetchRemote: Boolean) {
 
+        if (!fetchLocal && !fetchRemote) {
+            nothingToFetch()
+            return
+        }
+
         if (fetchLocal && fetchRemote) {
             fetchCombinedSongs()
+            return
         }
+
         if (fetchLocal && !fetchRemote) {
             fetchLocalSongs()
+            return
         }
+
         if (!fetchLocal && fetchRemote) {
             fetchRemoteSongs()
+            return
         }
+    }
+
+    private fun nothingToFetch() {
+        Log.d("TEST", "NOTHING TO FETCH")
     }
 
     private fun fetchCombinedSongs() {
         disposables.add(autoCompletePublishSubject
             .debounce(250, TimeUnit.MILLISECONDS)
             .distinctUntilChanged()
-            .switchMap { getSongsUseCase.getSongs(artistName, releaseYear).toObservable() }
+            .switchMap { getCombinedSongsUseCase.getSongs(artistName, releaseYear).toObservable() }
             .subscribeOn(Schedulers.io())
             .subscribe({ results ->
                 showResultsCombined(results)
@@ -62,7 +84,7 @@ class SongsListViewModel(private val getSongsUseCase: GetSongsUseCase) : BaseVie
         disposables.add(autoCompletePublishSubject
             .debounce(250, TimeUnit.MILLISECONDS)
             .distinctUntilChanged()
-            .switchMap { getSongsUseCase.getLocalSongs(artistName, releaseYear).toObservable() }
+            .switchMap { getLocalSongsUseCase.getLocalSongs(artistName, releaseYear).toObservable() }
             .subscribeOn(Schedulers.io())
             .subscribe({ results ->
                 showLocalResults(results)
@@ -79,7 +101,7 @@ class SongsListViewModel(private val getSongsUseCase: GetSongsUseCase) : BaseVie
         disposables.add(autoCompletePublishSubject
             .debounce(250, TimeUnit.MILLISECONDS)
             .distinctUntilChanged()
-            .switchMap { getSongsUseCase.getRemoteSongs(artistName, releaseYear).toObservable() }
+            .switchMap { getRemoteSongsUseCase.getRemoteSongs(artistName, releaseYear).toObservable() }
             .subscribeOn(Schedulers.io())
             .subscribe({ results ->
                 showRemoteResults(results)
@@ -91,6 +113,5 @@ class SongsListViewModel(private val getSongsUseCase: GetSongsUseCase) : BaseVie
         remoteSongs.value = results
         localSongs.value = null
     }
-
 
 }

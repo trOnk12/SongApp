@@ -5,9 +5,9 @@ import com.example.tooploxsongapp.data.local.LocalSongsReader
 import com.example.tooploxsongapp.domain.model.RemoteSong
 import io.reactivex.Flowable
 
-class SongsLocalImpl(private val localSongsReader: LocalSongsReader)  {
+class SongsLocalImpl(private val localSongsReader: LocalSongsReader) : SongsDataStore<LocalSong> {
 
-     fun getSongs(artistName: String): Flowable<List<LocalSong>> {
+    override fun getSongs(artistName: String): Flowable<List<LocalSong>> {
         val localSongList = localSongsReader.getSongs()
 
         return Flowable.fromIterable(localSongList)
