@@ -11,9 +11,20 @@ class SongsLocalImpl(private val localSongsReader: LocalSongsReader) : SongsData
         val localSongList = localSongsReader.getSongs()
 
         return Flowable.fromIterable(localSongList)
-            .filter { song -> song.artist == artistName }
+            .filter { song -> song.artist?.contains(artistName,true)!! }
             .toList()
             .toFlowable()
     }
+
+    override fun getSongs(artistName: String, releaseYear: String): Flowable<List<LocalSong>> {
+        val localSongList = localSongsReader.getSongs()
+
+        return Flowable.fromIterable(localSongList)
+            .filter { song -> song.artist?.contains(artistName,true)!! }
+            .filter { song -> song.releaseYear == releaseYear.toInt()}
+            .toList()
+            .toFlowable()
+    }
+
 
 }

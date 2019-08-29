@@ -12,5 +12,4 @@ abstract class ActivityBuilder {
     @ContributesAndroidInjector(modules = [SongsListActivityModule::class])
     internal abstract fun bindSongsListActivity(): SongsListActivity
 
-
 }

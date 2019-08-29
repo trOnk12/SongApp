@@ -5,6 +5,7 @@ import com.example.tooploxsongapp.data.local.FileManager
 import com.example.tooploxsongapp.data.local.LocalSongsReader
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 @Module
 class LocalDataModule {

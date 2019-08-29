@@ -16,18 +16,18 @@ import dagger.Provides
 class RepositoryModule {
 
     @Provides
-    fun provideSongRepository(songsLocalImpl: SongsLocalImpl, remoteSongsImpl: SongsRemoteImpl): SongRepository {
-        return SongRepositoryImpl(remoteSongsImpl, songsLocalImpl)
-    }
-
-    @Provides
-    fun provideSongsLocal(localSongsReader: LocalSongsReader): SongsDataStore<LocalSong> {
+    fun provideSongsLocal(localSongsReader: LocalSongsReader): SongsLocalImpl {
         return SongsLocalImpl(localSongsReader)
     }
 
     @Provides
-    fun provideSongsRemote(remoteSongsApi: RemoteSongsApi): SongsDataStore<RemoteSong> {
+    fun provideSongsRemote(remoteSongsApi: RemoteSongsApi): SongsRemoteImpl {
         return SongsRemoteImpl(remoteSongsApi)
+    }
+
+    @Provides
+    fun provideSongRepository(songsLocalImpl: SongsLocalImpl, remoteSongsImpl: SongsRemoteImpl): SongRepository {
+        return SongRepositoryImpl(remoteSongsImpl, songsLocalImpl)
     }
 
 }

@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+<layout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+>
+    <data>
+        <variable name="item" type="com.example.tooploxsongapp.data.entities.SongItemViewModel"/>
+    </data>
+
+<LinearLayout
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
 
     <ImageView
-            android:background="#2196F3"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            app:srcCompat="@android:drawable/ic_media_play"
+            app:srcCompat="@drawable/yellow_song"
             android:id="@+id/imageView"/>
 
     <LinearLayout
@@ -20,20 +26,27 @@
             android:layout_height="match_parent">
 
         <TextView
-                android:grav="center"
+                android:text="@{item.title}"
+                android:id="@+id/song_title"
                 tools:text="I am your love "
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
         <TextView
+                android:text="@{item.artistName}"
+                android:id="@+id/artist_name"
                 tools:text="Ed Sheran"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
         <TextView
+                android:text="@{item.releaseYear}"
+                android:id="@+id/release_year"
                 tools:text="2019"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
     </LinearLayout>
 </LinearLayout>
+
+</layout>

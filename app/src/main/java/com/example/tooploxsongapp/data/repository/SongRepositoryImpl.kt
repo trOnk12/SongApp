@@ -5,10 +5,10 @@ import com.example.tooploxsongapp.data.entities.LocalSong
 import com.example.tooploxsongapp.domain.model.RemoteSong
 import com.example.tooploxsongapp.domain.repository.SongRepository
 import io.reactivex.Flowable
-import io.reactivex.Single
 import io.reactivex.functions.BiFunction
+import javax.inject.Inject
 
-class SongRepositoryImpl(private val remote: SongsRemoteImpl, private val local: SongsLocalImpl) : SongRepository {
+class SongRepositoryImpl @Inject constructor(private val remote: SongsRemoteImpl, private val local: SongsLocalImpl) : SongRepository {
 
     override fun getSongs(artistName: String): Flowable<CombinedSongs> {
 
@@ -28,6 +28,7 @@ class SongRepositoryImpl(private val remote: SongsRemoteImpl, private val local:
     }
 
     override fun getSongs(artistName: String, releaseYear: String): Flowable<CombinedSongs> {
+
         return Flowable.zip<List<LocalSong>, List<RemoteSong>, CombinedSongs>(local.getSongs(artistName),
             remote.getSongs(artistName),
             BiFunction { localSongs, remoteSongs ->

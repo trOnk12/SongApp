@@ -1,9 +1,11 @@
 package com.example.tooploxsongapp.data.local
 
-import com.example.tooploxsongapp.data.entities.LocalData
+import android.util.Log
 import com.example.tooploxsongapp.data.entities.LocalSong
-import com.example.tooploxsongapp.domain.model.RemoteSong
-import com.google.gson.Gson
+import com.example.tooploxsongapp.data.utils.IntTypeAdapter
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
+
 
 class LocalSongsReader(private val fileManager: FileManager) {
 
@@ -11,8 +13,14 @@ class LocalSongsReader(private val fileManager: FileManager) {
 
     fun getSongs():List<LocalSong>{
         val songsListJson = fileManager.readJSONFromFile(FILE_DIRECTORY)
-        val localData = Gson().fromJson(songsListJson, LocalData::class.java)
-        return localData.localSongList
+        Log.d("TEST","local json" + songsListJson)
+
+        val gsonInstance = GsonBuilder().registerTypeAdapter(java.lang.Integer::class.java, IntTypeAdapter()).create()
+
+        val collectionType = object : TypeToken<Collection<LocalSong>>() {}.type
+        val songList : Collection<LocalSong> = gsonInstance.fromJson(songsListJson, collectionType)
+
+        return  songList as List<LocalSong>
     }
 
 }

@@ -6,6 +6,10 @@ import io.reactivex.Flowable
 
 class SongsRemoteImpl(private val api: RemoteSongsApi) : SongsDataStore<RemoteSong> {
 
-    override fun getSongs(artistName: String): Flowable<List<RemoteSong>> = api.getSongByArtistName(artistName)
+    override fun getSongs(artistName: String, releaseYear: String): Flowable<List<RemoteSong>> =
+        api.getSong(artistName, releaseYear).map {it.results}
+
+    override fun getSongs(artistName: String): Flowable<List<RemoteSong>> =
+        api.getSong().map{it.results}
 
 }

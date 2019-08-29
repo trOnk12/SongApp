@@ -13,35 +13,83 @@
             tools:context=".presentation.songslist.SongsListActivity">
 
         <androidx.appcompat.widget.Toolbar
-                android:gravity="center"
+                app:contentInsetStart="6dp"
+                android:minHeight="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
             <LinearLayout
                     android:weightSum="1"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:orientation="horizontal">
-                <EditText
-                        android:layout_weight="0.3"
-                        android:id="@+id/artistNameSearchInput"
-                        android:text="@{songListViewModel.artistName}"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" android:hint="Artist name"/>
 
                 <EditText
                         android:layout_weight="0.7"
+                        android:paddingStart="8dp"
+                        android:background="@drawable/rounded_edittext"
+                        android:id="@+id/artistNameSearchInput"
+                        android:text="@={songListViewModel.artistName}"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" android:hint="Artist name"/>
+
+                <EditText
+                        android:paddingStart="8dp"
+                        android:layout_marginLeft="4dp"
+                        android:background="@drawable/rounded_edittext"
+                        android:layout_marginRight="4dp"
+                        android:layout_weight="0.3"
                         android:id="@+id/releaseYearInput"
-                        android:text="@{songListViewModel.releaseYear}"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" android:hint="Year"/>
+                        android:text="@={songListViewModel.releaseYear}"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" android:hint="Year"/>
+
+                <ImageView
+                        android:clickable="true"
+                        android:id="@+id/source_dialog"
+                        android:background="@drawable/rounded_edittext"
+                        android:src="@drawable/source_icon"
+                        android:tint="#0000"
+                        android:layout_width="52dp"
+                        android:layout_height="42dp"
+                >
+
+                </ImageView>
+
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
 
+        <LinearLayout
+                android:id="@+id/information_container"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:visibility="visible"
+                android:layout_height="match_parent">
+
+            <ProgressBar
+                    android:visibility="gone"
+                    android:id="@+id/progress_bar"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"/>
+
+            <TextView
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:gravity="center"
+                    tools:text="Oops... I am sorry, no search results !"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/information_text"/>
+
+        </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView
+                android:visibility="gone"
+                android:id="@+id/songs_list_rv"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="match_parent"/>
     </LinearLayout>
 
 </layout>

@@ -6,5 +6,6 @@ import io.reactivex.Flowable
 interface SongsDataStore<T> {
 
     fun getSongs(artistName:String) : Flowable<List<T>>
+    fun getSongs(artistName:String,releaseYear:String):Flowable<List<T>>
 
 }

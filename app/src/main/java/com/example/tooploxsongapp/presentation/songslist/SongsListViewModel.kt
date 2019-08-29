@@ -2,13 +2,12 @@ package com.example.tooploxsongapp.presentation.songslist
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.example.tooploxsongapp.data.entities.CombinedSongs
-import com.example.tooploxsongapp.data.entities.LocalSong
-import com.example.tooploxsongapp.domain.model.RemoteSong
+import com.example.tooploxsongapp.data.entities.SongItemViewModel
 import com.example.tooploxsongapp.domain.usecases.GetCombinedSongsUseCase
 import com.example.tooploxsongapp.domain.usecases.GetLocalSongsUseCase
 import com.example.tooploxsongapp.domain.usecases.GetRemoteSongsUseCase
 import com.jakewharton.rxrelay2.PublishRelay
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -20,26 +19,41 @@ class SongsListViewModel
     private val getRemoteSongsUseCase: GetRemoteSongsUseCase
 ) : BaseViewModel() {
 
-    private val autoCompletePublishSubject = PublishRelay.create<String>()
-
-    private val artistName: String = ""
-    private val releaseYear: String = ""
-
-    var localSongs: MutableLiveData<List<LocalSong>> = MutableLiveData()
-    var remoteSongs: MutableLiveData<List<RemoteSong>> = MutableLiveData()
-
-    fun onArtistNameTextChanged(fetchLocal: Boolean, fetchRemote: Boolean) {
-        determineFetchSource(fetchLocal, fetchRemote)
+    enum class UIState{
+        LOADING,
+        NO_LOADING,
+        NO_SEARCH_RESULTS,
+        NO_ARTIST_NAME,
+        NO_SOURCE,
+        SHOW_INFO_SCREEN,
+        HIDE_INFO_SCREEN
     }
 
-    fun refreshSongList(fetchLocal: Boolean, fetchRemote: Boolean) {
-        determineFetchSource(fetchLocal, fetchRemote)
+    private val autoCompletePublishSubject = PublishRelay.create<String>()
+
+    var songItemViewModelList: MutableLiveData<List<SongItemViewModel>> = MutableLiveData()
+    val artistName: MutableLiveData<String> = MutableLiveData()
+    val releaseYear: MutableLiveData<String> = MutableLiveData()
+    val uiState: MutableLiveData<UIState> = MutableLiveData()
+
+    fun fetchSongList(fetchLocal: Boolean, fetchRemote: Boolean) {
+        if (artistName.value != null && artistName.value != "") {
+
+            uiState.value = UIState.SHOW_INFO_SCREEN
+            uiState.value = UIState.LOADING
+
+            determineFetchSource(fetchLocal, fetchRemote)
+        } else {
+            if (artistName.value == null || artistName.value == "") {
+                uiState.value = UIState.SHOW_INFO_SCREEN
+                uiState.value = UIState.NO_ARTIST_NAME
+            }
+        }
     }
 
     private fun determineFetchSource(fetchLocal: Boolean, fetchRemote: Boolean) {
-
         if (!fetchLocal && !fetchRemote) {
-            nothingToFetch()
+            uiState.value = UIState.NO_SOURCE
             return
         }
 
@@ -59,59 +73,49 @@ class SongsListViewModel
         }
     }
 
-    private fun nothingToFetch() {
-        Log.d("TEST", "NOTHING TO FETCH")
-    }
-
     private fun fetchCombinedSongs() {
-        disposables.add(autoCompletePublishSubject
+        getCombinedSongsUseCase.getSongs(artistName.value!!, releaseYear.value!!)
             .debounce(250, TimeUnit.MILLISECONDS)
             .distinctUntilChanged()
-            .switchMap { getCombinedSongsUseCase.getSongs(artistName, releaseYear).toObservable() }
             .subscribeOn(Schedulers.io())
             .subscribe({ results ->
-                showResultsCombined(results)
+                showResults(results)
             }, { t: Throwable? -> Log.d("TEST", "error" + t.toString()) })
-        )
-    }
-
-    private fun showResultsCombined(results: CombinedSongs) {
-        localSongs.value = results.localSong
-        remoteSongs.value = results.remoteSong
     }
 
     private fun fetchLocalSongs() {
-        disposables.add(autoCompletePublishSubject
+        getLocalSongsUseCase.getLocalSongs(artistName.value!!, releaseYear.value)
             .debounce(250, TimeUnit.MILLISECONDS)
             .distinctUntilChanged()
-            .switchMap { getLocalSongsUseCase.getLocalSongs(artistName, releaseYear).toObservable() }
             .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ results ->
-                showLocalResults(results)
-            }, { t: Throwable? -> Log.d("TEST", "error" + t.toString()) })
-        )
-    }
-
-    private fun showLocalResults(results: List<LocalSong>?) {
-        localSongs.value = results
-        remoteSongs.value = null
+                showResults(results)
+            }, { t: Throwable? -> Log.d("TEST", "error" + t.toString()) })!!
     }
 
     private fun fetchRemoteSongs() {
-        disposables.add(autoCompletePublishSubject
-            .debounce(250, TimeUnit.MILLISECONDS)
+        getRemoteSongsUseCase.getRemoteSongs(artistName.value!!,releaseYear.value)
+            .debounce(250,TimeUnit.MILLISECONDS)
             .distinctUntilChanged()
-            .switchMap { getRemoteSongsUseCase.getRemoteSongs(artistName, releaseYear).toObservable() }
             .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ results ->
-                showRemoteResults(results)
-            }, { t: Throwable? -> Log.d("TEST", "error" + t.toString()) })
-        )
+                showResults(results)
+            }, { t: Throwable? -> Log.d("TEST","error" + t.toString())})
     }
 
-    private fun showRemoteResults(results: List<RemoteSong>?) {
-        remoteSongs.value = results
-        localSongs.value = null
+    private fun showResults(results: MutableList<SongItemViewModel>?) {
+        uiState.value = UIState.NO_LOADING
+
+        if (results == null || results.size == 0 ) {
+            uiState.value = UIState.NO_SEARCH_RESULTS
+        } else {
+            uiState.value = UIState.HIDE_INFO_SCREEN
+        }
+
+        songItemViewModelList.value = results
     }
+
 
 }
