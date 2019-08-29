@@ -10,6 +10,6 @@ class SongsRemoteImpl(private val api: RemoteSongsApi) : SongsDataStore<RemoteSo
         api.getSong(artistName, releaseYear).map {it.results}
 
     override fun getSongs(artistName: String): Flowable<List<RemoteSong>> =
-        api.getSong().map{it.results}
+        api.getSong(artistName,RemoteSongsApi.MUSIC).map{it.results}
 
 }

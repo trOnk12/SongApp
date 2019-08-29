@@ -23,6 +23,7 @@ import android.content.Context
 import android.view.Menu
 
 import androidx.appcompat.app.AlertDialog
+import kotlinx.android.synthetic.main.song_item.*
 
 
 class SongsListActivity : AppCompatActivity() {
@@ -48,21 +49,6 @@ class SongsListActivity : AppCompatActivity() {
         initListeners()
     }
 
-    private fun initListeners() {
-        artistNameSearchInput.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-                songsListViewModel.fetchSongList(fetchLocal, fetchRemote)
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-        })
-
-        source_dialog.setOnClickListener { p0 ->
-            createDialog(p0.context)
-        }
-    }
-
     private fun initViewModel() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         songsListViewModel = ViewModelProviders.of(this, viewModelFactory)[SongsListViewModel::class.java]
@@ -83,6 +69,24 @@ class SongsListActivity : AppCompatActivity() {
 
         songs_list_rv.layoutManager = LinearLayoutManager(this)
         songs_list_rv.adapter = adapter
+    }
+
+    private fun initListeners() {
+        val textChangeListener = object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                songsListViewModel.fetchSongList(fetchLocal, fetchRemote)
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        }
+
+        artistNameSearchInput.addTextChangedListener(textChangeListener)
+        releaseYearInput.addTextChangedListener(textChangeListener)
+
+        source_dialog.setOnClickListener { p0 ->
+            createSourceOptionsDialog(p0.context)
+        }
     }
 
     private fun determineEvent(uiState: SongsListViewModel.UIState?) {
@@ -119,7 +123,7 @@ class SongsListActivity : AppCompatActivity() {
         }
     }
 
-    private fun createDialog(context: Context) {
+    private fun createSourceOptionsDialog(context: Context) {
         val checkBoxView = View.inflate(context, R.layout.source_options, null)
 
         val localCheckBox = checkBoxView.findViewById<View>(R.id.local_checkbox) as CheckBox

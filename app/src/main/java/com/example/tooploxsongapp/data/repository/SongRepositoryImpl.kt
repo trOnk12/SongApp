@@ -37,7 +37,7 @@ class SongRepositoryImpl @Inject constructor(private val remote: SongsRemoteImpl
     }
 
     override fun getLocalSongs(artistName: String, releaseYear: String): Flowable<List<LocalSong>> {
-        return local.getSongs(artistName)
+        return local.getSongs(artistName,releaseYear)
     }
 
     override fun getRemoteSongs(artistName: String, releaseYear: String): Flowable<List<RemoteSong>> {
