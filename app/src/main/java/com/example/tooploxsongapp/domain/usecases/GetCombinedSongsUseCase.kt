@@ -8,7 +8,7 @@ import io.reactivex.Single
 class GetCombinedSongsUseCase(private val songRepository: SongRepository) {
 
     fun getSongs(artistName: String, releaseYear: String?): Observable<MutableList<MutableList<SongItemViewModel>>> {
-        return if (releaseYear == null) {
+        return if (releaseYear == null || releaseYear == "") {
             getSongsByArtistName(artistName)!!
         } else {
             getSongsByArtistNameAndReleaseYear(artistName, releaseYear)!!

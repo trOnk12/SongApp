@@ -7,7 +7,7 @@ import io.reactivex.Observable
 class GetRemoteSongsUseCase(private val songRepository: SongRepository) {
 
     fun getRemoteSongs(artistName: String, releaseYear: String?): Observable<MutableList<SongItemViewModel>>{
-        return if(releaseYear != null) {
+        return if(releaseYear != null || releaseYear == "") {
             songRepository.getRemoteSongs(artistName, releaseYear)
                 .flatMapIterable { list -> list }
                 .map { item -> SongItemViewModel.convertFromRemote(item) }
