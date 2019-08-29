@@ -5,7 +5,6 @@ import dagger.android.ContributesAndroidInjector
 import com.example.tooploxsongapp.presentation.songslist.SongsListActivity
 import dagger.Module
 
-
 @Module
 abstract class ActivityBuilder {
 

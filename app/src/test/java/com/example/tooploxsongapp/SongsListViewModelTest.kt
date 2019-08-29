@@ -33,14 +33,11 @@ class SongsListViewModelTest {
     @JvmField
     val rule = InstantTaskExecutorRule()
 
-    private val songsRepository: SongRepositoryImpl = mock()
-
     private val getSongsCombinedSongsUseCase: GetCombinedSongsUseCase = mock()
     private val getLocalSongsUseCase: GetLocalSongsUseCase = mock()
     private val getRemoteSongsUseCase: GetRemoteSongsUseCase = mock()
 
     private val uiStateObserver: Observer<SongsListViewModel.UIState> = mock()
-    private val songListObserver : Observer<List<SongItemViewModel>> = mock()
 
     private val songListViewModel by lazy {
         SongsListViewModel(

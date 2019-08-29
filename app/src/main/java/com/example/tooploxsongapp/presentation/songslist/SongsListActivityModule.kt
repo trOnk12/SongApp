@@ -6,6 +6,7 @@ import com.example.tooploxsongapp.domain.usecases.GetLocalSongsUseCase
 import com.example.tooploxsongapp.domain.usecases.GetRemoteSongsUseCase
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 @Module
 class SongsListActivityModule {

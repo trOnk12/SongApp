@@ -56,20 +56,14 @@ class GetLocalSongsUseCaseTest {
 
     @Test
     fun testGetSongListNoReleaseYearResponse() {
-        val response = arrayListOf(
-            LocalSong("TEST", "TEST", 2019, "TEST", 1, 1, 1, 1),
-            LocalSong("TEST", "TEST", 2019, "TEST", 1, 1, 1, 1),
-            LocalSong("TEST", "TEST", 2019, "TEST", 1, 1, 1, 1)
+        val response = mutableListOf(
+            LocalSong()
         )
 
         whenever(songRepository.getLocalSongs(anyString()))
             .thenReturn(Flowable.just(response))
 
-        val expected = mutableListOf<SongItemViewModel>()
-
-        for (song in response) {
-            expected.add(SongItemViewModel.convertFromLocal(song))
-        }
+        val expected = mutableListOf(SongItemViewModel.convertFromLocal(LocalSong()) )
 
         localSongsUseCase.getLocalSongs("TEST", null)
             .test()

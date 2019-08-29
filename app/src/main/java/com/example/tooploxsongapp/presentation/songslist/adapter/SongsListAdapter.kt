@@ -12,15 +12,10 @@ class SongsListAdapter : RecyclerView.Adapter<SongsListAdapter.SongHolder>() {
 
     private var songsList: ArrayList<SongItemViewModel> = ArrayList()
 
-    fun clearLocalSongsData() {
-        songsList.clear()
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongHolder {
+      override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = SongItemBinding.inflate(inflater)
         return SongHolder(binding)
-
     }
 
     override fun onBindViewHolder(holder: SongHolder, position: Int) {
