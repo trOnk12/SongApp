@@ -19,7 +19,7 @@ class SongsListViewModel
     private val getRemoteSongsUseCase: GetRemoteSongsUseCase
 ) : BaseViewModel() {
 
-    enum class UIState{
+    enum class UIState {
         LOADING,
         NO_LOADING,
         NO_SEARCH_RESULTS,
@@ -28,8 +28,6 @@ class SongsListViewModel
         SHOW_INFO_SCREEN,
         HIDE_INFO_SCREEN
     }
-
-    private val autoCompletePublishSubject = PublishRelay.create<String>()
 
     var songItemViewModelList: MutableLiveData<List<SongItemViewModel>> = MutableLiveData()
     val artistName: MutableLiveData<String> = MutableLiveData()
@@ -74,41 +72,46 @@ class SongsListViewModel
     }
 
     private fun fetchCombinedSongs() {
-        getCombinedSongsUseCase.getSongs(artistName.value!!, releaseYear.value!!)
+        disposables.add(getCombinedSongsUseCase.getSongs(artistName.value!!, releaseYear.value)
             .debounce(250, TimeUnit.MILLISECONDS)
             .distinctUntilChanged()
             .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ results ->
                 showResults(results)
             }, { t: Throwable? -> Log.d("TEST", "error" + t.toString()) })
+        )
     }
 
     private fun fetchLocalSongs() {
-        getLocalSongsUseCase.getLocalSongs(artistName.value!!, releaseYear.value)
+        disposables.add(
+            getLocalSongsUseCase.getLocalSongs(artistName.value!!, releaseYear.value)
+                .debounce(250, TimeUnit.MILLISECONDS)
+                .distinctUntilChanged()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ results ->
+                    showResults(results)
+                }, { t: Throwable? -> Log.d("TEST", "error" + t.toString()) })
+        )
+    }
+
+    private fun fetchRemoteSongs() {
+        disposables.add(getRemoteSongsUseCase.getRemoteSongs(artistName.value!!, releaseYear.value)
             .debounce(250, TimeUnit.MILLISECONDS)
             .distinctUntilChanged()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ results ->
                 showResults(results)
-            }, { t: Throwable? -> Log.d("TEST", "error" + t.toString()) })!!
-    }
-
-    private fun fetchRemoteSongs() {
-        getRemoteSongsUseCase.getRemoteSongs(artistName.value!!,releaseYear.value)
-            .debounce(250,TimeUnit.MILLISECONDS)
-            .distinctUntilChanged()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ results ->
-                showResults(results)
-            }, { t: Throwable? -> Log.d("TEST","error" + t.toString())})
+            }, { t: Throwable? -> Log.d("TEST", "error" + t.toString()) })
+        )
     }
 
     private fun showResults(results: MutableList<SongItemViewModel>?) {
         uiState.value = UIState.NO_LOADING
 
-        if (results == null || results.size == 0 ) {
+        if (results == null || results.size == 0) {
             uiState.value = UIState.NO_SEARCH_RESULTS
         } else {
             uiState.value = UIState.HIDE_INFO_SCREEN
@@ -116,6 +119,5 @@ class SongsListViewModel
 
         songItemViewModelList.value = results
     }
-
 
 }

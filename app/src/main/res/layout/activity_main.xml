@@ -29,6 +29,7 @@
                 <EditText
                         android:layout_weight="0.7"
                         android:paddingStart="8dp"
+                        android:maxLines="1"
                         android:background="@drawable/rounded_edittext"
                         android:id="@+id/artistNameSearchInput"
                         android:text="@={songListViewModel.artistName}"
@@ -38,6 +39,7 @@
                 <EditText
                         android:paddingStart="8dp"
                         android:layout_marginLeft="4dp"
+                        android:maxLines="1"
                         android:background="@drawable/rounded_edittext"
                         android:layout_marginRight="4dp"
                         android:layout_weight="0.3"
@@ -47,7 +49,6 @@
                         android:layout_height="match_parent" android:hint="Year"/>
 
                 <ImageView
-                        android:clickable="true"
                         android:id="@+id/source_dialog"
                         android:background="@drawable/rounded_edittext"
                         android:src="@drawable/source_icon"
@@ -78,6 +79,7 @@
                     android:textStyle="bold"
                     android:textSize="18sp"
                     android:gravity="center"
+                    android:text="Enter an artist name."
                     tools:text="Oops... I am sorry, no search results !"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

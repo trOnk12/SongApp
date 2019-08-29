@@ -20,6 +20,7 @@ import javax.inject.Inject
 
 import android.widget.CheckBox
 import android.content.Context
+import android.view.Menu
 
 import androidx.appcompat.app.AlertDialog
 
@@ -34,19 +35,17 @@ class SongsListActivity : AppCompatActivity() {
 
     private lateinit var adapter: SongsListAdapter
 
-    private var fetchLocal = false
-    private var fetchRemote = true
-
+    private var fetchLocal = true
+    private var fetchRemote = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initListeners()
         initViewModel()
         initRecyclerView()
-
+        initListeners()
     }
 
     private fun initListeners() {

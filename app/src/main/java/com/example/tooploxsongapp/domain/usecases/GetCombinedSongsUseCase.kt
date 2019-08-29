@@ -6,23 +6,47 @@ import io.reactivex.Observable
 
 class GetCombinedSongsUseCase(private val songRepository: SongRepository) {
 
-    fun getSongs(artistName: String, releaseYear: String): Observable<MutableList<SongItemViewModel>> {
+    fun getSongs(artistName: String, releaseYear: String?): Observable<MutableList<SongItemViewModel>> {
+        return if (releaseYear == null) {
+            getSongsByArtistName(artistName)
+        } else {
+            getSongsByArtistNameAndReleaseYear(artistName, releaseYear)
+        }
+    }
 
-        val localSongsItemView = songRepository.getLocalSongs(artistName,releaseYear)
+    private fun getSongsByArtistName(artistName: String): Observable<MutableList<SongItemViewModel>> {
+        val localSongsItemView = songRepository.getLocalSongs(artistName)
             .flatMapIterable { list -> list }
-            .map { item ->  SongItemViewModel.convertFromLocal(item) }
-            .filter { item -> item.releaseYear == releaseYear }
+            .map { item -> SongItemViewModel.convertFromLocal(item) }
             .toList()
             .toObservable()
 
-        val remoteSongsItemView = songRepository.getRemoteSongs(artistName,releaseYear)
+        val remoteSongsItemView = songRepository.getRemoteSongs(artistName)
             .flatMapIterable { list -> list }
-            .map { item ->  SongItemViewModel.convertFromRemote(item) }
+            .map { item -> SongItemViewModel.convertFromRemote(item) }
             .toList()
             .toObservable()
 
-          return Observable.concat(localSongsItemView,remoteSongsItemView)
+        return Observable.concat(localSongsItemView, remoteSongsItemView)
+    }
 
+    private fun getSongsByArtistNameAndReleaseYear(
+        artistName: String,
+        releaseYear: String
+    ): Observable<MutableList<SongItemViewModel>> {
+        val localSongsItemView = songRepository.getLocalSongs(artistName, releaseYear)
+            .flatMapIterable { list -> list }
+            .map { item -> SongItemViewModel.convertFromLocal(item) }
+            .toList()
+            .toObservable()
+
+        val remoteSongsItemView = songRepository.getRemoteSongs(artistName, releaseYear)
+            .flatMapIterable { list -> list }
+            .map { item -> SongItemViewModel.convertFromRemote(item) }
+            .toList()
+            .toObservable()
+
+        return Observable.concat(localSongsItemView, remoteSongsItemView)
     }
 
 }
